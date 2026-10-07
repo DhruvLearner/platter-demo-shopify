@@ -1,2 +1,9 @@
 {{ 'overflow-list.css' | asset_url | preload_tag: as: 'style' }}
 {{ 'base.css' | asset_url | stylesheet_tag: preload: true }}
+
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4" async></script>
+<style type="text/tailwindcss">
+  @layer theme, utilities;
+  @import "tailwindcss/theme" layer(theme) prefix(tw);
+  @import "tailwindcss/utilities" layer(utilities);
+</style>
