@@ -1,0 +1,208 @@
+/* Same styles as the HTML version, scoped to .best-seller so Horizon is untouched */
+.best-seller {
+  --font-heading: "Source Serif Pro", serif;
+  --font-title: "Bebas Neue", sans-serif;
+  --font-body: "Poppins", sans-serif;
+
+  --color-ink: #231F20;
+  --color-text: #1C1D1D;
+  --color-muted: #707070;
+  --color-star-empty: #CFCFCF;
+  --color-track: #DDD6D7;
+  --color-sale: #5C7962;
+  --color-link: #5C553A;
+  --color-light: #FFFFFA;
+
+  --card-width: 355px;
+  --card-radius: 10px;
+
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--color-text);
+}
+
+/* Small reset inside the section (the HTML version gets this from Tailwind's preflight) */
+@layer base {
+  .best-seller :is(h2, h3, p, ul) {
+    margin: 0;
+  }
+
+  .best-seller ul {
+    padding: 0;
+    list-style: none;
+  }
+
+  .best-seller a {
+    text-decoration-line: none;
+  }
+
+  .best-seller button {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+    font: inherit;
+    color: inherit;
+  }
+}
+
+/* Horizon hides link underlines and fades heading links on hover */
+.best-seller a {
+  text-decoration-color: currentcolor;
+}
+
+.best-seller .product-title a:hover {
+  color: inherit;
+}
+
+.best-seller .section-heading {
+  font-family: var(--font-heading);
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.26;
+  letter-spacing: -0.01em;
+  text-transform: none;
+  color: var(--color-ink);
+}
+
+.best-seller .product-title,
+.best-seller .badge {
+  font-family: var(--font-title);
+  text-transform: uppercase;
+}
+
+.best-seller .product-title {
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 19px;
+  letter-spacing: 0.03em;
+  color: inherit;
+}
+
+.best-seller .product-reviews {
+  font-size: 11px;
+  line-height: 17px;
+  color: var(--color-muted);
+}
+
+.best-seller .product-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: opacity 300ms ease;
+}
+
+.best-seller .no-native-scrollbar {
+  scrollbar-width: none;
+}
+
+.best-seller .no-native-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.best-seller .scrollbar {
+  position: relative;
+  height: 4px;
+  background-color: var(--color-track);
+}
+
+.best-seller .scrollbar-thumb {
+  position: absolute;
+  top: 50%;
+  width: min(480px, 100%);
+  height: 4px;
+  border-radius: 6px;
+  background-color: var(--color-ink);
+  transform: translateY(-50%);
+  transition: height 150ms ease;
+  cursor: grab;
+  touch-action: none;
+}
+
+/* Bigger invisible hit area so the thin bar is easy to grab */
+.best-seller .scrollbar-thumb::before {
+  content: "";
+  position: absolute;
+  inset: -8px 0;
+}
+
+.best-seller .scrollbar-thumb:hover,
+.best-seller .scrollbar-thumb:active {
+  height: 6px;
+}
+
+.best-seller .badge {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  padding: 4px 8px;
+  border-radius: 9999px;
+  box-shadow: inset 0 0 0 1px #000;
+  background-color: #fff;
+  color: #000;
+  font-size: 8px;
+  line-height: 10px;
+  letter-spacing: 0.0475em;
+}
+
+.best-seller .badge-sale {
+  left: auto;
+  right: 4px;
+  background-color: var(--color-sale);
+  color: var(--color-light);
+}
+
+.best-seller .show-more-button,
+.best-seller .shop-all-link {
+  border-radius: 9999px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+}
+
+.best-seller .show-more-button {
+  background-color: var(--color-text);
+  color: var(--color-light);
+  font-size: 16px;
+  line-height: 22px;
+}
+
+.best-seller .shop-all-link {
+  color: var(--color-link);
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: 0.031em;
+}
+
+@media (min-width: 768px) {
+  .best-seller .section-heading {
+    font-size: 40px;
+    font-weight: 900;
+    line-height: 1.2;
+  }
+
+  .best-seller .product-title {
+    font-size: 18px;
+    line-height: 22px;
+  }
+
+  .best-seller .product-reviews {
+    font-size: 12px;
+    line-height: 18px;
+  }
+
+  .best-seller .badge {
+    top: 8px;
+    left: 8px;
+    font-size: 10px;
+    line-height: 12px;
+    letter-spacing: 0.06em;
+  }
+
+  .best-seller .badge-sale {
+    left: auto;
+    right: 27px;
+  }
+}

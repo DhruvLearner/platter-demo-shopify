@@ -1,0 +1,270 @@
+{{ 'best-seller.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'best-seller.js' | asset_url }}" defer></script>
+
+{%- liquid
+  assign collection = section.settings.collection
+  assign heading_id = 'best-seller-heading-' | append: section.id
+  assign shop_all_url = section.settings.shop_all_url | default: collection.url
+-%}
+
+<section
+  aria-labelledby="{{ heading_id }}"
+  class="best-seller tw:px-6 tw:pt-(--padding-top-mobile) tw:pb-(--padding-bottom-mobile) tw:lg:px-32 tw:lg:pt-(--padding-top) tw:lg:pb-(--padding-bottom)"
+  style="
+    --padding-top: {{ section.settings.padding_top }}px;
+    --padding-bottom: {{ section.settings.padding_bottom }}px;
+    --padding-top-mobile: {{ section.settings.padding_top_mobile }}px;
+    --padding-bottom-mobile: {{ section.settings.padding_bottom_mobile }}px;
+    --color-ink: {{ section.settings.heading_color }};
+    --color-text: {{ section.settings.text_color }};
+    --color-link: {{ section.settings.link_color }};
+    --color-sale: {{ section.settings.sale_badge_color }};
+    background-color: {{ section.settings.background_color }};
+  "
+>
+  <header class="tw:flex tw:items-center tw:justify-center tw:md:justify-between">
+    <h2 id="{{ heading_id }}" class="section-heading">{{ section.settings.heading | escape }}</h2>
+
+    {%- if section.settings.show_shop_all and shop_all_url != blank -%}
+      <a href="{{ shop_all_url }}" class="shop-all-link tw:hidden tw:items-center tw:gap-2 tw:px-8 tw:py-4 tw:hover:underline tw:md:inline-flex">
+        {{ section.settings.shop_all_label | escape }}
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+          <path d="M3.333 10H16.667M11.667 15L16.667 10L11.667 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+    {%- endif -%}
+  </header>
+
+  {%- if collection != blank and collection.products_count > 0 -%}
+    <best-seller-list class="tw:block" data-mobile-visible-count="{{ section.settings.mobile_products_visible }}">
+      <ul data-product-grid class="no-native-scrollbar tw:relative tw:mt-6 tw:grid tw:grid-cols-2 tw:gap-x-[11px] tw:gap-y-3 tw:overflow-hidden tw:transition-[max-height] tw:duration-500 tw:ease-in-out tw:max-md:max-h-(--grid-height) tw:md:mt-9 tw:md:flex tw:md:gap-6 tw:md:overflow-x-auto">
+        {%- for product in collection.products limit: section.settings.products_to_show -%}
+          {%- assign hidden_on_mobile = false -%}
+          {%- if forloop.index > section.settings.mobile_products_visible -%}
+            {%- assign hidden_on_mobile = true -%}
+          {%- endif -%}
+
+          {%- comment -%} Only the first cards of a section near the top of the page load straight away {%- endcomment -%}
+          {%- assign lazy_load = true -%}
+          {%- if section.index <= 2 and forloop.index <= 4 -%}
+            {%- assign lazy_load = false -%}
+          {%- endif -%}
+
+          {% render 'best-seller-card', product: product, hidden_on_mobile: hidden_on_mobile, lazy_load: lazy_load, section_settings: section.settings %}
+        {%- endfor -%}
+      </ul>
+
+      <div data-scrollbar class="scrollbar tw:mt-12 tw:hidden tw:md:block" aria-hidden="true">
+        <div data-scrollbar-thumb class="scrollbar-thumb"></div>
+      </div>
+
+      <button type="button" data-show-more class="show-more-button tw:mt-3 tw:w-full tw:cursor-pointer tw:px-6 tw:py-4 tw:md:hidden">
+        {{ section.settings.show_more_label | escape }}
+      </button>
+    </best-seller-list>
+  {%- elsif request.design_mode -%}
+    <p class="tw:mt-6 tw:text-center tw:text-(--color-muted)">Select a collection with products to show your best sellers.</p>
+  {%- endif -%}
+</section>
+
+{% schema %}
+{
+  "name": "Best Seller",
+  "tag": "div",
+  "class": "best-seller-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Best Sellers"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection"
+    },
+    {
+      "type": "range",
+      "id": "products_to_show",
+      "label": "Products to show",
+      "min": 2,
+      "max": 20,
+      "step": 1,
+      "default": 10
+    },
+    {
+      "type": "header",
+      "content": "Shop all link"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_shop_all",
+      "label": "Show shop all link",
+      "info": "Shown on desktop only",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "shop_all_label",
+      "label": "Link label",
+      "default": "Shop All Best Sellers"
+    },
+    {
+      "type": "url",
+      "id": "shop_all_url",
+      "label": "Link",
+      "info": "Leave empty to link to the selected collection"
+    },
+    {
+      "type": "header",
+      "content": "Product cards"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_secondary_image",
+      "label": "Show second image on hover",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_best_seller_badge",
+      "label": "Show best seller badge",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "best_seller_badge_label",
+      "label": "Best seller badge label",
+      "default": "Best Seller"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_sale_badge",
+      "label": "Show sale badge",
+      "info": "Shows the discount when a product has a compare-at price",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "sale_badge_label",
+      "label": "Sale badge label",
+      "info": "Shown before the discount, e.g. Save 15%",
+      "default": "Save"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_rating",
+      "label": "Show rating",
+      "info": "Uses the reviews.rating and reviews.rating_count product metafields",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Mobile"
+    },
+    {
+      "type": "range",
+      "id": "mobile_products_visible",
+      "label": "Products visible before Show More",
+      "min": 2,
+      "max": 10,
+      "step": 2,
+      "default": 4
+    },
+    {
+      "type": "text",
+      "id": "show_more_label",
+      "label": "Show More button label",
+      "default": "Show More"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading, stars and scrollbar",
+      "default": "#231F20"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text and Show More button",
+      "default": "#1C1D1D"
+    },
+    {
+      "type": "color",
+      "id": "link_color",
+      "label": "Shop all link",
+      "default": "#5C553A"
+    },
+    {
+      "type": "color",
+      "id": "sale_badge_color",
+      "label": "Sale badge",
+      "default": "#5C7962"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding (desktop)",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding (desktop)",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "label": "Top padding (mobile)",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "label": "Bottom padding (mobile)",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 36
+    }
+  ],
+  "presets": [
+    {
+      "name": "Best Seller"
+    }
+  ]
+}
+{% endschema %}
