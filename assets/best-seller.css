@@ -47,8 +47,9 @@
   }
 }
 
-/* Horizon hides link underlines and fades heading links on hover */
+/* Links use the text color (not the browser's blue) and a visible underline on hover */
 .best-seller a {
+  color: inherit;
   text-decoration-color: currentcolor;
 }
 
